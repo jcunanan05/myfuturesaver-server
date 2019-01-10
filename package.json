@@ -6,17 +6,21 @@
     "start": "node ./bin/www",
     "prod": "NODE_ENV=production -- npm run start",
     "debug": "DEBUG=server:*",
-    "dev": "npm run debug -- npm run start",
+    "dev": "NODE_ENV=development npm run debug -- npm run start",
     "watch": "nodemon --config ./nodemon.json --exec npm run dev"
   },
   "dependencies": {
+    "body-parser": "^1.18.3",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "~4.16.0",
-    "morgan": "~1.9.0"
+    "mailgun.js": "^2.0.1",
+    "morgan": "~1.9.0",
+    "multer": "^1.4.1"
   },
   "devDependencies": {
+    "dotenv": "^6.2.0",
     "eslint": "^5.12.0",
     "eslint-config-prettier": "^3.3.0",
     "nodemon": "^1.18.9",

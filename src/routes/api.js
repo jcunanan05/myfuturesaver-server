@@ -18,4 +18,14 @@ router.post('/', cors(), (_, res) => {
   });
 });
 
+router.options('/messages', cors());
+
+router.post('/messages', cors(), (req, res) => {
+  console.log(req.body);
+  res.json({
+    message: 'Post Success',
+    body: req.body
+  });
+});
+
 module.exports = router;
