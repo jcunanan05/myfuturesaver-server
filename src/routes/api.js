@@ -37,11 +37,16 @@ router.post('/messages', cors(), async (req, res) => {
     console.log('attachment directory', attachment);
 
     const success = await mg.messages().send({
-      from: `${name} <noreply@mailgun.com>`,
+      from: `${name} <noreply@myfuturesaver.org>`,
       to: [`${process.env.MAILGUN_SEND_TO_EMAIL}`],
-      subject: 'Hello',
-      // text: 'Testing some Mailgun awesomness!',
-      html: `<h1>Testing some Mailgun awesomness! from Name: ${name}, Email: ${email}</h1>`,
+      subject: 'Automated Email from Applicant',
+      text: `
+Hi User,
+
+This is a Sample Email from ${name}. His/her email is ${email}
+
+Attachment is found below. Thank you.
+      `,
       attachment
     });
 
