@@ -3,7 +3,6 @@ var router = express.Router();
 var cors = require('cors');
 var mailgun = require('mailgun-js');
 var multer = require('multer');
-const emailContent = require('../content/respUploadEmailContent');
 
 router.options('/', cors());
 
@@ -23,36 +22,44 @@ router.post('/', cors(), (_, res) => {
 
 router.options('/messages', cors());
 
-router.post('/messages', cors(), multer().single('file'), async (req, res) => {
-  /* eslint-disable no-console */
-  const domainName = process.env.MAILGUN_DOMAIN_NAME;
-  const mg = mailgun({
-    apiKey: process.env.MAILGUN_DEV_API_KEY,
-    domain: domainName
-  });
-  try {
-    // const { name, email, kidsNames, respStatementType } = req.body;
-    console.log('body req: ', req.body, 'file req: ', req.file);
+router.post(
+  '/messages',
+  cors(),
+  multer().single('attachment'),
+  async (req, res) => {
+    /* eslint-disable no-console */
+    try {
+      // make new mailgun instance
+      const domainName = process.env.MAILGUN_DOMAIN_NAME;
+      const mg = mailgun({
+        apiKey: process.env.MAILGUN_DEV_API_KEY,
+        domain: domainName
+      });
+      // get fields from the request file and body.
+      const { from, to, subject, text } = req.body;
+      const attachment = new mg.Attachment({
+        data: req.file.buffer,
+        filename: req.file.originalname
+      });
+      // send the email and wait for the OK reply
+      const resolve = await mg.messages().send({
+        from,
+        to,
+        subject,
+        text,
+        attachment
+      });
 
-    // const success = await mg.messages().send({
-    //   from: `${name} <noreply@myfuturesaver.org>`,
-    //   to: [`${process.env.MAILGUN_SEND_TO_EMAIL}`],
-    //   subject: 'Automated Email from Applicant',
-    //   text: emailContent({ name, email, kidsNames, respStatementType }),
-    //   attachment: files
-    // });
+      console.log(resolve);
 
-    // console.log(success);
-
-    res.json({
-      message: 'Post Success',
-      body: req.body,
-      file: req.file
-    });
-  } catch (error) {
-    console.log('error on attachment', error);
-    res.json(503, error);
+      res.json({
+        message: resolve
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(503).json({ error });
+    }
   }
-});
+);
 
 module.exports = router;

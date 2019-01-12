@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "prod": "NODE_ENV=production -- npm run start",
+    "start:dev": "NODE_ENV=development npm run debug -- npm run start",
+    "prod": "NODE_ENV=production npm run start",
     "debug": "DEBUG=server:*",
-    "dev": "NODE_ENV=development npm run debug -- npm run start",
-    "watch": "nodemon --config ./nodemon.json --exec npm run dev"
+    "dev": "npm run watch",
+    "watch": "nodemon --config ./nodemon.json --exec npm run start:dev"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
