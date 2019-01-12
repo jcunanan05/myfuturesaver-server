@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 var cors = require('cors');
 var mailgun = require('mailgun-js');
-const path = require('path');
-const fs = require('fs');
+var multer = require('multer');
+const emailContent = require('../content/respUploadEmailContent');
 
 router.options('/', cors());
 
@@ -23,7 +23,7 @@ router.post('/', cors(), (_, res) => {
 
 router.options('/messages', cors());
 
-router.post('/messages', cors(), async (req, res) => {
+router.post('/messages', cors(), multer().single('file'), async (req, res) => {
   /* eslint-disable no-console */
   const domainName = process.env.MAILGUN_DOMAIN_NAME;
   const mg = mailgun({
@@ -31,31 +31,23 @@ router.post('/messages', cors(), async (req, res) => {
     domain: domainName
   });
   try {
-    const { email, name } = req.body;
-    const attachment = path.join(__dirname, '../../public/images/sample.png');
+    // const { name, email, kidsNames, respStatementType } = req.body;
+    console.log('body req: ', req.body, 'file req: ', req.file);
 
-    console.log('attachment directory', attachment);
+    // const success = await mg.messages().send({
+    //   from: `${name} <noreply@myfuturesaver.org>`,
+    //   to: [`${process.env.MAILGUN_SEND_TO_EMAIL}`],
+    //   subject: 'Automated Email from Applicant',
+    //   text: emailContent({ name, email, kidsNames, respStatementType }),
+    //   attachment: files
+    // });
 
-    const success = await mg.messages().send({
-      from: `${name} <noreply@myfuturesaver.org>`,
-      to: [`${process.env.MAILGUN_SEND_TO_EMAIL}`],
-      subject: 'Automated Email from Applicant',
-      text: `
-Hi User,
-
-This is a Sample Email from ${name}. His/her email is ${email}
-
-Attachment is found below. Thank you.
-      `,
-      attachment
-    });
-
-    console.log(success);
+    // console.log(success);
 
     res.json({
       message: 'Post Success',
       body: req.body,
-      success
+      file: req.file
     });
   } catch (error) {
     console.log('error on attachment', error);
