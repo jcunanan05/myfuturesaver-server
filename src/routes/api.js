@@ -68,7 +68,6 @@ router.post(
         'Origin'
       );
       res.append('X-Content-Type-Options', 'nosniff');
-      res.append('Access-Control-Allow-Origin', req.header('Origin'));
       res.json({
         message: resolve
       });
