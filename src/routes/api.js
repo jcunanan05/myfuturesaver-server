@@ -9,14 +9,15 @@ const DEVELOPMENT = process.env.NODE_ENV === 'development';
 var whitelist = ['https://myfuturesaver.org/'];
 var corsWithOptions = () => {
   if (DEVELOPMENT) return cors();
-  return cors({
-    origin: function(origin, callback) {
-      if (whitelist.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
+  // production config
+  return cors(function(req, callback) {
+    var corsOptions;
+    if (whitelist.indexOf(req.header('Origin')) !== -1) {
+      corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
+    } else {
+      corsOptions = { origin: false }; // disable CORS for this request
     }
+    callback(null, corsOptions); // callback expects two parameters: error and options
   });
 };
 
