@@ -75,7 +75,7 @@ router.post(
         'Origin'
       );
       res.append('X-Content-Type-Options', 'nosniff');
-      res.append('Access-Control-Allow-Origin', '*');
+      res.append('Access-Control-Allow-Origin', 'https://myfuturesaver.org');
       res.json({
         message: resolve
       });
