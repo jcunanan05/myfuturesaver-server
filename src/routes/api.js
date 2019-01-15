@@ -6,19 +6,12 @@ var multer = require('multer');
 const DEVELOPMENT = process.env.NODE_ENV === 'development';
 
 // allowed websites for CORS()
-var whitelist = ['https://myfuturesaver.org/'];
 var corsWithOptions = () => {
   if (DEVELOPMENT) return cors();
-  // production config
-  return cors(function(req, callback) {
-    var corsOptions;
-    if (whitelist.indexOf(req.header('Origin')) !== -1) {
-      corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
-    } else {
-      corsOptions = { origin: false }; // disable CORS for this request
-    }
-    callback(null, corsOptions); // callback expects two parameters: error and options
-  });
+  const options = {
+    origin: 'https://myfuturesaver.org'
+  };
+  return cors(options);
 };
 
 router.get('/', corsWithOptions(), (_, res) => {
@@ -75,7 +68,7 @@ router.post(
         'Origin'
       );
       res.append('X-Content-Type-Options', 'nosniff');
-      res.append('Access-Control-Allow-Origin', 'https://myfuturesaver.org');
+      res.append('Access-Control-Allow-Origin', req.header('Origin'));
       res.json({
         message: resolve
       });
