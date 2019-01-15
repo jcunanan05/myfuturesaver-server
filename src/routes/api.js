@@ -34,7 +34,7 @@ router.post('/', corsWithOptions(), (_, res) => {
   });
 });
 
-router.options('/mail/clb-statement', corsWithOptions());
+router.options('/mail/clb-statement', cors());
 
 router.post(
   '/mail/clb-statement',
