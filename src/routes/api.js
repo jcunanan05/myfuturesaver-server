@@ -69,7 +69,7 @@ router.post(
 
       // set no sniff headers for chrome CORB security
       res.append('X-Content-Type-Options', 'nosniff');
-      res.append('Access-Control-Allow-Origin', req.originalUrl);
+      res.append('Access-Control-Allow-Origin', req.hostname);
       res.json({
         message: resolve
       });
