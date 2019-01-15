@@ -69,6 +69,7 @@ router.post(
 
       // set no sniff headers for chrome CORB security
       res.append('X-Content-Type-Options', 'nosniff');
+      res.append('Access-Control-Allow-Headers', 'Content-Type');
       res.json({
         message: resolve
       });
