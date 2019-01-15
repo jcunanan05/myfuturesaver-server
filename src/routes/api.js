@@ -3,28 +3,42 @@ var router = express.Router();
 var cors = require('cors');
 var mailgun = require('mailgun-js');
 var multer = require('multer');
+const DEVELOPMENT = process.env.NODE_ENV === 'development';
 
-router.options('/', cors());
+// allowed websites for CORS()
+var whitelist = ['https://myfuturesaver.org/'];
+var corsWithOptions = () => {
+  if (DEVELOPMENT) return cors();
+  return cors({
+    origin: function(origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    }
+  });
+};
 
-router.get('/', cors(), (_, res) => {
+router.get('/', corsWithOptions(), (_, res) => {
   res.json({
     title: 'API route.',
     message: 'You hit the api route'
   });
 });
 
-router.post('/', cors(), (_, res) => {
+router.post('/', corsWithOptions(), (_, res) => {
   res.json({
     title: 'API Post Route',
     message: 'you posted at the api route'
   });
 });
 
-router.options('/messages', cors());
+router.options('/mail/clb-statement', corsWithOptions());
 
 router.post(
-  '/messages',
-  cors(),
+  '/mail/clb-statement',
+  corsWithOptions(),
   multer().single('attachment'),
   async (req, res) => {
     /* eslint-disable no-console */
