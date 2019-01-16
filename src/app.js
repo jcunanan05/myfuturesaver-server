@@ -13,7 +13,7 @@ var app = express();
 
 // dotenv configuration for dev environments.
 if (DEVELOPMENT) {
-  dotenv.config({ path: './.env.development' });
+  dotenv.config({ path: './.env.production' });
 }
 
 app.use(logger('dev'));

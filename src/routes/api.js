@@ -8,8 +8,19 @@ const DEVELOPMENT = process.env.NODE_ENV === 'development';
 // allowed websites for CORS()
 var corsWithOptions = () => {
   if (DEVELOPMENT) return cors();
+  var whitelist = [
+    'https://dev-myfuturesaver.netlify.com/',
+    'https://myfuturesaver.org',
+    'https://www.myfuturesaver.org'
+  ];
   const options = {
-    origin: 'https://myfuturesaver.org'
+    origin: function(origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    }
   };
   return cors(options);
 };
@@ -63,9 +74,7 @@ router.post(
       // set no sniff headers for chrome CORB security
       res.append(
         'Acess-Control-Allow-Headers',
-        'Content-Type',
-        'Access-Control-Allow-Origin',
-        'Origin'
+        'Content-Type, Access-Control-Allow-Origin, Origin'
       );
       res.append('X-Content-Type-Options', 'nosniff');
       res.json({
