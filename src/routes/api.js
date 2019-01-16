@@ -14,7 +14,7 @@ var corsWithOptions = () => {
     'https://www.myfuturesaver.org'
   ];
   // Add CORS whitelist on client staging website
-  if (STAGING) whitelist.append('https://dev-myfuturesaver.netlify.com');
+  if (STAGING) whitelist.push('https://dev-myfuturesaver.netlify.com');
   const optionsDelegate = function(req, callback) {
     var corsOptions;
     if (whitelist.indexOf(req.header('Origin')) !== -1) {
