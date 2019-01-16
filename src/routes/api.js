@@ -8,12 +8,14 @@ const DEVELOPMENT = process.env.NODE_ENV === 'development';
 // allowed websites for CORS()
 var corsWithOptions = () => {
   if (DEVELOPMENT) return cors();
+  const STAGING = process.env.DEPLOYMENT_ENV === 'staging';
   var whitelist = [
-    'https://dev-myfuturesaver.netlify.com',
     'https://myfuturesaver.org',
     'https://www.myfuturesaver.org'
   ];
-  const options = function(req, callback) {
+  // Add CORS whitelist on client staging website
+  if (STAGING) whitelist.append('https://dev-myfuturesaver.netlify.com');
+  const optionsDelegate = function(req, callback) {
     var corsOptions;
     if (whitelist.indexOf(req.header('Origin')) !== -1) {
       corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
@@ -22,7 +24,7 @@ var corsWithOptions = () => {
     }
     callback(null, corsOptions); // callback expects two parameters: error and options
   };
-  return cors(options);
+  return cors(optionsDelegate);
 };
 
 router.get('/', corsWithOptions(), (_, res) => {
