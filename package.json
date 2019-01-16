@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "start:dev": "NODE_ENV=development npm run debug -- npm run start",
-    "prod": "NODE_ENV=production npm run start",
+    "start": "npm run start:prod",
+    "start:node": "node ./bin/www",
+    "start:dev": "NODE_ENV=development npm run debug -- npm run start:node",
+    "start:prod": "NODE_ENV=production npm run start:node",
     "debug": "DEBUG=server:*",
     "dev": "npm run watch",
     "watch": "nodemon --config ./nodemon.json --exec npm run start:dev"
