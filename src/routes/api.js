@@ -9,18 +9,18 @@ const DEVELOPMENT = process.env.NODE_ENV === 'development';
 var corsWithOptions = () => {
   if (DEVELOPMENT) return cors();
   var whitelist = [
-    'https://dev-myfuturesaver.netlify.com/',
+    'https://dev-myfuturesaver.netlify.com',
     'https://myfuturesaver.org',
     'https://www.myfuturesaver.org'
   ];
-  const options = {
-    origin: function(origin, callback) {
-      if (whitelist.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
+  const options = function(req, callback) {
+    var corsOptions;
+    if (whitelist.indexOf(req.header('Origin')) !== -1) {
+      corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
+    } else {
+      corsOptions = { origin: false }; // disable CORS for this request
     }
+    callback(null, corsOptions); // callback expects two parameters: error and options
   };
   return cors(options);
 };
