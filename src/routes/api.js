@@ -1,31 +1,17 @@
-var express = require('express');
-var router = express.Router();
-var cors = require('cors');
-var mailgun = require('mailgun-js');
-var multer = require('multer');
-const DEVELOPMENT = process.env.NODE_ENV === 'development';
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const {
+  sendEmailWithAttachment,
+  sendSuccessMail
+} = require('../controllers/mailController');
+const {
+  addCorbResponse,
+  corsWithOptions
+} = require('../controllers/corsController');
 
-// allowed websites for CORS()
-var corsWithOptions = () => {
-  if (DEVELOPMENT) return cors();
-  const STAGING = process.env.DEPLOYMENT_ENV === 'staging';
-  var whitelist = [
-    'https://myfuturesaver.org',
-    'https://www.myfuturesaver.org'
-  ];
-  // Add CORS whitelist on client staging website
-  if (STAGING) whitelist.push('https://dev-myfuturesaver.netlify.com');
-  const optionsDelegate = function(req, callback) {
-    var corsOptions;
-    if (whitelist.indexOf(req.header('Origin')) !== -1) {
-      corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
-    } else {
-      corsOptions = { origin: false }; // disable CORS for this request
-    }
-    callback(null, corsOptions); // callback expects two parameters: error and options
-  };
-  return cors(optionsDelegate);
-};
+// for chrome CORB security
+router.use(addCorbResponse);
 
 router.get('/', corsWithOptions(), (_, res) => {
   res.json({
@@ -41,52 +27,16 @@ router.post('/', corsWithOptions(), (_, res) => {
   });
 });
 
+// preflight response for post request
 router.options('/mail/clb-statement', corsWithOptions());
-
 router.post(
   '/mail/clb-statement',
   corsWithOptions(),
   multer().single('attachment'),
-  async (req, res) => {
-    /* eslint-disable no-console */
-    try {
-      // make new mailgun instance
-      const domainName = process.env.MAILGUN_DOMAIN_NAME;
-      const mg = mailgun({
-        apiKey: process.env.MAILGUN_DEV_API_KEY,
-        domain: domainName
-      });
-      // get fields from the request file and body.
-      const { from, to, subject, text } = req.body;
-      const attachment = new mg.Attachment({
-        data: req.file.buffer,
-        filename: req.file.originalname
-      });
-      // send the email and wait for the OK reply
-      const resolve = await mg.messages().send({
-        from,
-        to,
-        subject,
-        text,
-        attachment
-      });
-
-      console.log(resolve);
-
-      // set no sniff headers for chrome CORB security
-      res.append(
-        'Acess-Control-Allow-Headers',
-        'Content-Type, Access-Control-Allow-Origin, Origin'
-      );
-      res.append('X-Content-Type-Options', 'nosniff');
-      res.json({
-        message: resolve
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(503).json({ error });
-    }
-  }
+  sendEmailWithAttachment
 );
+
+router.options('/mail/clb-statement-success', corsWithOptions());
+router.post('/mail/clb-statement-success', corsWithOptions(), sendSuccessMail);
 
 module.exports = router;
