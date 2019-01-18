@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+  - stable
+cache:
+  directories:
+    - node_modules
+script:
+  - echo "skipping tests"
+deploy:
+  provider: elasticbeanstalk
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  bucket_name: $S3_BUCKET
+  region: ca-central-1
+  skip_cleanup: true
+  app: myfuturesaver-canada
+  env: production-myfuturesaver-server
+  on:
+    branch: master
