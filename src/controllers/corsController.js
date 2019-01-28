@@ -1,5 +1,9 @@
-var cors = require('cors');
-var whitelist = ['https://myfuturesaver.org', 'https://www.myfuturesaver.org'];
+const cors = require('cors');
+const defaultWhitelist = [
+  'https://myfuturesaver.org',
+  'https://www.myfuturesaver.org'
+];
+const defaultStagingWhitelist = ['https://dev-myfuturesaver.netlify.com'];
 
 const addCorbResponse = (_, res, next) => {
   // allow responses to Chrome for CORB security. more info at https://www.chromium.org/Home/chromium-security/corb-for-developers
@@ -10,12 +14,15 @@ const addCorbResponse = (_, res, next) => {
 exports.addCorbResponse = addCorbResponse;
 
 // allowed websites for CORS()
-const corsWithOptions = () => {
+const corsWithOptions = ({
+  whitelist = defaultWhitelist,
+  stagingWhitelist = defaultStagingWhitelist
+}) => {
   const DEVELOPMENT = process.env.NODE_ENV === 'development';
   const STAGING = process.env.DEPLOYMENT_ENV === 'staging';
   if (DEVELOPMENT) return cors();
   // Add CORS whitelist on client staging website
-  if (STAGING) whitelist.push('https://dev-myfuturesaver.netlify.com');
+  if (STAGING) whitelist.concat(stagingWhitelist);
   const optionsDelegate = function(req, callback) {
     var corsOptions;
     if (whitelist.indexOf(req.header('Origin')) !== -1) {
@@ -29,8 +36,12 @@ const corsWithOptions = () => {
 };
 
 exports.addCorbResponse = addCorbResponse;
-exports.corsOptions = corsWithOptions;
+exports.corsWithOptions = corsWithOptions;
+exports.defaultWhitelist = defaultWhitelist;
+exports.defaultStagingWhitelist = defaultStagingWhitelist;
 module.exports = {
   corsWithOptions,
-  addCorbResponse
+  addCorbResponse,
+  defaultStagingWhitelist,
+  defaultWhitelist
 };
