@@ -5,8 +5,12 @@ const { corsWithOptions } = require('../../controllers/corsController');
 const { sendSuccessMail } = require('../../controllers/mailController');
 const whitelist = ['https://canadaclb.ca', 'https://www.canadaclb.ca'];
 const stagingWhitelist = ['https://staging-canadaclb.netlify.com'];
+const whitelistOptions = {
+  whitelist,
+  stagingWhitelist
+};
 
-router.get('/', corsWithOptions({ whitelist, stagingWhitelist }), (_, res) => {
+router.get('/', corsWithOptions(whitelistOptions), (_, res) => {
   res.json({
     title: 'API route.',
     message: 'You hit the api route'
@@ -14,26 +18,20 @@ router.get('/', corsWithOptions({ whitelist, stagingWhitelist }), (_, res) => {
 });
 
 // success mail route
-router.options(
-  '/mail/success',
-  corsWithOptions({ whitelist, stagingWhitelist })
-);
+router.options('/mail/success', corsWithOptions(whitelistOptions));
 
 router.post(
   '/mail/success',
-  corsWithOptions({ whitelist, stagingWhitelist }),
+  corsWithOptions(whitelistOptions),
   sendSuccessMail
 );
 
 // new subscriber at mailchimp route
-router.options(
-  '/mail/subscriber/new',
-  corsWithOptions({ whitelist, stagingWhitelist })
-);
+router.options('/mail/subscriber/new', corsWithOptions(whitelistOptions));
 
 router.post(
   '/mail/subscriber/new',
-  corsWithOptions({ whitelist, stagingWhitelist }),
+  corsWithOptions(whitelistOptions),
   async (req, res, next) => {
     const apiKey = process.env.MAILCHIMP_API_KEY;
     const listId = req.body.listId;

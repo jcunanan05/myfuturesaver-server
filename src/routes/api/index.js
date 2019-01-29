@@ -8,8 +8,14 @@ const {
 } = require('../../controllers/mailController');
 const {
   addCorbResponse,
-  corsWithOptions
+  corsWithOptions,
+  defaultStagingWhitelist,
+  defaultWhitelist
 } = require('../../controllers/corsController');
+const whitelistOptions = {
+  defaultWhitelist,
+  defaultStagingWhitelist
+};
 
 // for chrome CORB security
 router.use(addCorbResponse);
@@ -17,14 +23,14 @@ router.use(addCorbResponse);
 // router file
 router.use('/canadaclb', canadaclbRouter);
 
-router.get('/', corsWithOptions(), (_, res) => {
+router.get('/', corsWithOptions(whitelistOptions), (_, res) => {
   res.json({
     title: 'API route.',
     message: 'You hit the api route'
   });
 });
 
-router.post('/', corsWithOptions(), (_, res) => {
+router.post('/', corsWithOptions(whitelistOptions), (_, res) => {
   res.json({
     title: 'API Post Route',
     message: 'you posted at the api route'
@@ -32,7 +38,7 @@ router.post('/', corsWithOptions(), (_, res) => {
 });
 
 // preflight response for post request
-router.options('/mail/clb-statement', corsWithOptions());
+router.options('/mail/clb-statement', corsWithOptions(whitelistOptions));
 router.post(
   '/mail/clb-statement',
   corsWithOptions(),
@@ -40,7 +46,14 @@ router.post(
   sendEmailWithAttachment
 );
 
-router.options('/mail/clb-statement-success', corsWithOptions());
-router.post('/mail/clb-statement-success', corsWithOptions(), sendSuccessMail);
+router.options(
+  '/mail/clb-statement-success',
+  corsWithOptions(whitelistOptions)
+);
+router.post(
+  '/mail/clb-statement-success',
+  corsWithOptions(whitelistOptions),
+  sendSuccessMail
+);
 
 module.exports = router;

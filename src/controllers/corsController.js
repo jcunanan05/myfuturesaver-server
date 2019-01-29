@@ -13,21 +13,15 @@ const addCorbResponse = (_, res, next) => {
 
 // allowed websites for CORS()
 const corsWithOptions = whitelistOptions => {
-  // default options fallbacks
-  const whitelist = whitelistOptions
-    ? whitelistOptions.whitelist
-    : defaultWhitelist;
-  const stagingWhitelist = whitelistOptions
-    ? whitelistOptions.stagingWhitelist
-    : defaultStagingWhitelist;
   const DEVELOPMENT = process.env.NODE_ENV === 'development';
   const STAGING = process.env.DEPLOYMENT_ENV === 'staging';
   if (DEVELOPMENT) return cors();
   // Add CORS whitelist on client staging website
-  if (STAGING) whitelist.concat(stagingWhitelist);
+  if (STAGING)
+    whitelistOptions.whitelist.concat(whitelistOptions.stagingWhitelist);
   const optionsDelegate = function(req, callback) {
     var corsOptions;
-    if (whitelist.indexOf(req.header('Origin')) !== -1) {
+    if (whitelistOptions.whitelist.indexOf(req.header('Origin')) !== -1) {
       corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
     } else {
       corsOptions = { origin: false }; // disable CORS for this request
