@@ -65,7 +65,7 @@ const sendSuccessMail = async (req, res) => {
 };
 
 exports.sendEmailWithAttachment = sendEmailWithAttachment;
-exports.sendSucessMail = sendSuccessMail;
+exports.sendSuccessMail = sendSuccessMail;
 module.exports = {
   sendEmailWithAttachment,
   sendSuccessMail

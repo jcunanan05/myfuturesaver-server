@@ -2,6 +2,7 @@ const express = require('express');
 const Mailchimp = require('mailchimp-api-v3');
 const router = express.Router();
 const { corsWithOptions } = require('../../controllers/corsController');
+const { sendSuccessMail } = require('../../controllers/mailController');
 const whitelist = ['https://canadaclb.ca', 'https://www.canadaclb.ca'];
 const stagingWhitelist = ['https://staging-canadaclb.netlify.com'];
 
@@ -12,6 +13,19 @@ router.get('/', corsWithOptions({ whitelist, stagingWhitelist }), (_, res) => {
   });
 });
 
+// success mail route
+router.options(
+  '/mail/success',
+  corsWithOptions({ whitelist, stagingWhitelist })
+);
+
+router.post(
+  '/mail/success',
+  corsWithOptions({ whitelist, stagingWhitelist }),
+  sendSuccessMail
+);
+
+// new subscriber at mailchimp route
 router.options(
   '/mail/subscriber/new',
   corsWithOptions({ whitelist, stagingWhitelist })
@@ -43,10 +57,16 @@ router.post(
     }
     // make a mailchimp request
     try {
-      await mailchimp.post({
+      const resolve = await mailchimp.post({
         path: `/lists/${listId}`,
         body: data
       });
+      if (resolve.error_count !== 0) {
+        res.status(422).json({
+          error: resolve.errors
+        });
+        return next(new Error('Something wrong with mailchimp'));
+      }
       res.json({ success: 'Thank you for subscribing.' });
     } catch (error) {
       console.log(error);

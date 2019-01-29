@@ -1,20 +1,14 @@
+if (process.env.NODE_ENV === 'development')
+  require('dotenv').config({ path: './.env.development' }); // dotenv configuration for dev environments.
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var dotenv = require('dotenv');
-const DEVELOPMENT = process.env.NODE_ENV === 'development';
-
 var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api');
 
 var app = express();
-
-// dotenv configuration for dev environments.
-if (DEVELOPMENT) {
-  dotenv.config({ path: './.env.development' });
-}
 
 app.use(logger('dev'));
 // parse application/x-www-form-urlencoded
