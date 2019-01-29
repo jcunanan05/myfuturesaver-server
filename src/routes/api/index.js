@@ -1,17 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const canadaclbRouter = require('./canadaclb');
 const {
   sendEmailWithAttachment,
   sendSuccessMail
-} = require('../controllers/mailController');
+} = require('../../controllers/mailController');
 const {
   addCorbResponse,
   corsWithOptions
-} = require('../controllers/corsController');
+} = require('../../controllers/corsController');
 
 // for chrome CORB security
 router.use(addCorbResponse);
+
+// router file
+router.use('/canadaclb', canadaclbRouter);
 
 router.get('/', corsWithOptions(), (_, res) => {
   res.json({
