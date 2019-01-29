@@ -35,11 +35,13 @@ router.post(
       ],
       update_existing: true
     };
+    // throw error when listId is not provided
     if (!req.body.listId) {
       const error = 'listId is required.';
       res.status(422).json({ error });
       return next(new Error('listId is required.'));
     }
+    // make a mailchimp request
     try {
       await mailchimp.post({
         path: `/lists/${listId}`,
