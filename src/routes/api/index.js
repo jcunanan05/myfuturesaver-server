@@ -23,14 +23,14 @@ router.use(addCorbResponse);
 // router file
 router.use('/canadaclb', canadaclbRouter);
 
-router.get('/', corsWithOptions, (_, res) => {
+router.get('/', corsWithOptions(whitelistOptions), (_, res) => {
   res.json({
     title: 'API route.',
     message: 'You hit the api route'
   });
 });
 
-router.post('/', corsWithOptions, (_, res) => {
+router.post('/', corsWithOptions(whitelistOptions), (_, res) => {
   res.json({
     title: 'API Post Route',
     message: 'you posted at the api route'
@@ -41,7 +41,7 @@ router.post('/', corsWithOptions, (_, res) => {
 router.options('/mail/clb-statement', corsWithOptions(whitelistOptions));
 router.post(
   '/mail/clb-statement',
-  corsWithOptions(),
+  corsWithOptions(whitelistOptions),
   multer().single('attachment'),
   sendEmailWithAttachment
 );
