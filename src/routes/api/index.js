@@ -13,8 +13,8 @@ const {
   defaultWhitelist
 } = require('../../controllers/corsController');
 const whitelistOptions = {
-  defaultWhitelist,
-  defaultStagingWhitelist
+  whitelist: defaultWhitelist,
+  stagingWhiteList: defaultStagingWhitelist
 };
 
 // for chrome CORB security
@@ -23,14 +23,14 @@ router.use(addCorbResponse);
 // router file
 router.use('/canadaclb', canadaclbRouter);
 
-router.get('/', corsWithOptions(whitelistOptions), (_, res) => {
+router.get('/', corsWithOptions, (_, res) => {
   res.json({
     title: 'API route.',
     message: 'You hit the api route'
   });
 });
 
-router.post('/', corsWithOptions(whitelistOptions), (_, res) => {
+router.post('/', corsWithOptions, (_, res) => {
   res.json({
     title: 'API Post Route',
     message: 'you posted at the api route'
