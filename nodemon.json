@@ -1,5 +1,6 @@
 {
   "watch": ["src/"],
   "ignore": [".git", "node_modules/**/node_modules"],
-  "ext": "js"
+  "ext": "js",
+  "exec": "npm run start:dev"
 }

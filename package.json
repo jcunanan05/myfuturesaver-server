@@ -9,7 +9,7 @@
     "start:prod": "NODE_ENV=production npm run start:node",
     "debug": "DEBUG=server:*",
     "dev": "npm run watch",
-    "watch": "nodemon --config ./nodemon.json --exec npm run start:dev"
+    "watch": "nodemon"
   },
   "dependencies": {
     "axios": "^0.18.0",
