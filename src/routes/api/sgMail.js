@@ -5,9 +5,9 @@ const router = express.Router();
  * sgMail route - separated /mail route to /sgMail to separate mailgun with sendgrid. Will migrate later.
  */
 
-router.get('/', (__, res) => {
+router.get('/send', (__, res) => {
   res.json({
-    message: 'endpoint hit'
+    message: 'send endpoint hit'
   });
 });
 
