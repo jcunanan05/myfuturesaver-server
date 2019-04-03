@@ -1,8 +1,8 @@
 const express = require('express');
 const Mailchimp = require('mailchimp-api-v3');
 const router = express.Router();
-const { corsWithOptions } = require('../../controllers/corsController');
-const { sendSuccessMail } = require('../../controllers/mailController');
+const { corsWithOptions } = require('../../../controllers/corsController');
+const { sendSuccessMail } = require('../../../controllers/mailController');
 const whitelist = ['https://canadaclb.ca', 'https://www.canadaclb.ca'];
 const stagingWhitelist = ['https://staging-canadaclb.netlify.com'];
 const whitelistOptions = {
@@ -26,7 +26,9 @@ router.post(
   sendSuccessMail
 );
 
-// new subscriber at mailchimp route
+/**
+ * New CanadaCLB Mailchimp Subscriber -
+ */
 router.options('/mail/subscriber/new', corsWithOptions(whitelistOptions));
 
 router.post(

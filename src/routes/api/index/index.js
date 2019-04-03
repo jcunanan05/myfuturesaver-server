@@ -1,17 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
 const canadaclbRouter = require('./canadaclb');
-const {
-  sendEmailWithAttachment,
-  sendSuccessMail
-} = require('../../controllers/mailController');
+const futuresaverMailRouter = require('./futuresaverMail');
 const {
   addCorbResponse,
   corsWithOptions,
   defaultStagingWhitelist,
   defaultWhitelist
-} = require('../../controllers/corsController');
+} = require('../../../controllers/corsController');
 const whitelistOptions = {
   whitelist: defaultWhitelist,
   stagingWhiteList: defaultStagingWhitelist
@@ -21,6 +17,7 @@ const whitelistOptions = {
 router.use(addCorbResponse);
 
 // router file
+router.use('/', futuresaverMailRouter);
 router.use('/canadaclb', canadaclbRouter);
 
 router.get('/', corsWithOptions(whitelistOptions), (_, res) => {
@@ -36,24 +33,5 @@ router.post('/', corsWithOptions(whitelistOptions), (_, res) => {
     message: 'you posted at the api route'
   });
 });
-
-// preflight response for post request
-router.options('/mail/clb-statement', corsWithOptions(whitelistOptions));
-router.post(
-  '/mail/clb-statement',
-  corsWithOptions(whitelistOptions),
-  multer().single('attachment'),
-  sendEmailWithAttachment
-);
-
-router.options(
-  '/mail/clb-statement-success',
-  corsWithOptions(whitelistOptions)
-);
-router.post(
-  '/mail/clb-statement-success',
-  corsWithOptions(whitelistOptions),
-  sendSuccessMail
-);
 
 module.exports = router;
