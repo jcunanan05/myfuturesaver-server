@@ -4,14 +4,14 @@ const multer = require('multer');
 const {
   sendEmailWithAttachment,
   sendSuccessMail
-} = require('../../../controllers/mailController');
+} = require('../../controllers/mailController');
 
 const {
   addCorbResponse,
   corsWithOptions,
   defaultStagingWhitelist,
   defaultWhitelist
-} = require('../../../controllers/corsController');
+} = require('../../controllers/corsController');
 
 const whitelistOptions = {
   whitelist: defaultWhitelist,
@@ -26,10 +26,10 @@ router.use(addCorbResponse);
  */
 
 // preflight response for post request
-router.options('/mail/clb-statement', corsWithOptions(whitelistOptions));
+router.options('/clb-statement', corsWithOptions(whitelistOptions));
 
 router.post(
-  '/mail/clb-statement',
+  '/clb-statement',
   corsWithOptions(whitelistOptions),
   multer().single('attachment'),
   sendEmailWithAttachment
@@ -39,13 +39,10 @@ router.post(
  * CLB Statement Success - Thank you email send to the user.
  */
 
-router.options(
-  '/mail/clb-statement-success',
-  corsWithOptions(whitelistOptions)
-);
+router.options('/clb-statement-success', corsWithOptions(whitelistOptions));
 
 router.post(
-  '/mail/clb-statement-success',
+  '/clb-statement-success',
   corsWithOptions(whitelistOptions),
   sendSuccessMail
 );

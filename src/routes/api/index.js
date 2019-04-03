@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const canadaclbRouter = require('./canadaclb');
-const futuresaverMailRouter = require('./futuresaverMail');
+const mailRouter = require('./mail');
+const sendgridMailRouter = require('./sgMail');
 const {
   addCorbResponse,
   corsWithOptions,
   defaultStagingWhitelist,
   defaultWhitelist
-} = require('../../../controllers/corsController');
+} = require('../../controllers/corsController');
 const whitelistOptions = {
   whitelist: defaultWhitelist,
   stagingWhiteList: defaultStagingWhitelist
@@ -17,8 +18,9 @@ const whitelistOptions = {
 router.use(addCorbResponse);
 
 // router file
-router.use('/', futuresaverMailRouter);
+router.use('/mail', mailRouter);
 router.use('/canadaclb', canadaclbRouter);
+router.use('/sg-mail', sendgridMailRouter);
 
 router.get('/', corsWithOptions(whitelistOptions), (_, res) => {
   res.json({
