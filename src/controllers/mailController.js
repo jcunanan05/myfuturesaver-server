@@ -1,5 +1,14 @@
 const mailgunLibrary = require('mailgun-js');
 
+/**
+ * Send Email with Attachment
+ * @param {string} from
+ * @param {string} to
+ * @param {string} subject
+ * @param {string} text
+ * @param {buffer} attachment
+ */
+
 const sendEmailWithAttachment = async (req, res, next) => {
   try {
     // mailgun instance
@@ -37,6 +46,14 @@ const sendEmailWithAttachment = async (req, res, next) => {
     res.status(503).json({ error });
   }
 };
+
+/**
+ * Send Email without Attachment
+ * @param {string} from
+ * @param {string} to
+ * @param {string} subject
+ * @param {string} text
+ */
 
 const sendSuccessMail = async (req, res) => {
   try {
