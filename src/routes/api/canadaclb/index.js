@@ -1,14 +1,16 @@
 const express = require('express');
 const Mailchimp = require('mailchimp-api-v3');
 const router = express.Router();
-const { corsWithOptions } = require('../../controllers/corsController');
-const { sendSuccessMail } = require('../../controllers/mailController');
-const whitelist = ['https://canadaclb.ca', 'https://www.canadaclb.ca'];
-const stagingWhitelist = ['https://staging-canadaclb.netlify.com'];
+const { corsWithOptions } = require('../../../controllers/corsController');
+const { sendSuccessMail } = require('../../../controllers/mailController');
+const smartsaverRouter = require('./smartsaver');
 const whitelistOptions = {
-  whitelist,
-  stagingWhitelist
+  whitelist: ['https://canadaclb.ca', 'https://www.canadaclb.ca'],
+  stagingWhitelist: ['https://staging-canadaclb.netlify.com']
 };
+
+// routers
+router.use('/smartsaver', smartsaverRouter);
 
 router.get('/', corsWithOptions(whitelistOptions), (_, res) => {
   res.json({
