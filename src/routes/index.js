@@ -1,5 +1,9 @@
 var express = require('express');
 var router = express.Router();
+const { addCorbResponse } = require('../controllers/corsController');
+
+// for chrome CORB security
+router.use(addCorbResponse);
 
 /* GET home page. */
 router.get('/', function(__, res) {
