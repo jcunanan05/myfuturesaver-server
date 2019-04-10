@@ -5,32 +5,18 @@ const {
   sendEmailWithAttachment,
   sendSuccessMail
 } = require('../../controllers/mailController');
-
-const {
-  addCorbResponse,
-  corsWithOptions,
-  defaultStagingWhitelist,
-  defaultWhitelist
-} = require('../../controllers/corsController');
-
-const whitelistOptions = {
-  whitelist: defaultWhitelist,
-  stagingWhiteList: defaultStagingWhitelist
-};
-
-// for chrome CORB security
-router.use(addCorbResponse);
+const { corsWithOptions } = require('../../controllers/corsController');
 
 /**
  * CLB Statement - User sends mail with attachment to smartsaver.
  */
 
 // preflight response for post request
-router.options('/clb-statement', corsWithOptions(whitelistOptions));
+router.options('/clb-statement', corsWithOptions());
 
 router.post(
   '/clb-statement',
-  corsWithOptions(whitelistOptions),
+  corsWithOptions(),
   multer().single('attachment'),
   sendEmailWithAttachment
 );
@@ -39,12 +25,8 @@ router.post(
  * CLB Statement Success - Thank you email send to the user.
  */
 
-router.options('/clb-statement-success', corsWithOptions(whitelistOptions));
+router.options('/clb-statement-success', corsWithOptions());
 
-router.post(
-  '/clb-statement-success',
-  corsWithOptions(whitelistOptions),
-  sendSuccessMail
-);
+router.post('/clb-statement-success', corsWithOptions(), sendSuccessMail);
 
 module.exports = router;

@@ -1,9 +1,4 @@
 const cors = require('cors');
-var defaultWhitelist = [
-  'https://myfuturesaver.org',
-  'https://www.myfuturesaver.org'
-];
-var defaultStagingWhitelist = ['https://dev-myfuturesaver.netlify.com'];
 
 const addCorbResponse = (_, res, next) => {
   // allow responses to Chrome for CORB security. more info at https://www.chromium.org/Home/chromium-security/corb-for-developers
@@ -11,33 +6,37 @@ const addCorbResponse = (_, res, next) => {
   next();
 };
 
-// allowed websites for CORS()
-const corsWithOptions = whitelistOptions => {
-  var whitelist = whitelistOptions ? whitelistOptions.whitelist : [];
-  var stagingWhitelist = whitelistOptions ? whitelistOptions.whitelist : [];
+const corsWithOptions = (
+  { whitelistedUrls, whitelistedStagingUrls } = {
+    whitelistedUrls: [
+      'https://myfuturesaver.org',
+      'https://www.myfuturesaver.org'
+    ],
+    whitelistedStagingUrls: ['https://dev-myfuturesaver.netlify.com']
+  }
+) => {
   var DEVELOPMENT = process.env.NODE_ENV;
   var STAGING = process.env.DEPLOYMENT_ENV;
+  const whitelist = whitelistedUrls ? whitelistedUrls : [];
   if (DEVELOPMENT) return cors();
-  if (STAGING) whitelist.concat(stagingWhitelist);
-  var corsOptionsDelegate = function(req, callback) {
+  if (STAGING)
+    whitelist.concat(whitelistedStagingUrls ? whitelistedStagingUrls : []);
+
+  return cors(function(req, callback) {
     var corsOptions;
     if (whitelist.indexOf(req.header('Origin')) !== -1) {
-      corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
+      corsOptions = { origin: true };
     } else {
-      corsOptions = { origin: false }; // disable CORS for this request
+      corsOptions = { origin: false };
     }
-    callback(null, corsOptions); // callback expects two parameters: error and options
-  };
-  return cors(corsOptionsDelegate);
+    // callback expects two parameters: error and options
+    callback(null, corsOptions);
+  });
 };
 
 exports.addCorbResponse = addCorbResponse;
 exports.corsWithOptions = corsWithOptions;
-exports.defaultWhitelist = defaultWhitelist;
-exports.defaultStagingWhitelist = defaultStagingWhitelist;
 module.exports = {
   corsWithOptions,
-  addCorbResponse,
-  defaultStagingWhitelist,
-  defaultWhitelist
+  addCorbResponse
 };
