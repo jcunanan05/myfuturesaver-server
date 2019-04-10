@@ -9,7 +9,9 @@
     "start:prod": "NODE_ENV=production npm run start:node",
     "debug": "DEBUG=server:*",
     "dev": "npm run watch",
-    "watch": "nodemon"
+    "watch": "nodemon",
+    "test": "jest",
+    "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "eslint": "^5.12.0",
     "eslint-config-prettier": "^3.3.0",
+    "jest": "^24.7.1",
     "nodemon": "^1.18.9",
     "prettier": "^1.15.3"
   }
