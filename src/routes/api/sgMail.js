@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { corsWithOptions } = require('../../controllers/corsController');
+const { sendMail } = require('../../libs/sendgrid');
 
 /**
  * sgMail route - separated /mail route to /sgMail to separate mailgun with sendgrid. Will migrate later.
@@ -14,11 +15,8 @@ const { corsWithOptions } = require('../../controllers/corsController');
  * @param {string} text - email message
  * @param {string} [html] - optional html email message
  */
-
-router.post('/send', (__, res) => {
-  res.json({
-    message: 'send endpoint hit'
-  });
+router.post('/send', async (req, res) => {
+  res.json({ message: 'ok' });
 });
 
 router.options('/send', corsWithOptions());
